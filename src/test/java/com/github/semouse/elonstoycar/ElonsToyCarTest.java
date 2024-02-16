@@ -32,7 +32,7 @@ class ElonsToyCarTest {
     void notDriveIfBatteryEmpty() {
         ElonsToyCar car = ElonsToyCar.buy();
         for(int i = 0; i < 101; i++){
-            drive();
+            car.drive();
         }
 
         String distance = car.distanceDisplay();
