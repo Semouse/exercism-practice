@@ -1,6 +1,7 @@
-package com.github.semouse.wizardsandwarriors;
+package com.github.semouse.wizardsandwarriors.first;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import org.junit.jupiter.api.Test;
 

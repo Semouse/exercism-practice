@@ -1,4 +1,4 @@
-package com.github.semouse.bookingupforbeauty.task;
+package com.github.semouse.bookingupforbeauty;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

@@ -1,4 +1,4 @@
-package com.github.semouse.wizardsandwarriors;
+package com.github.semouse.wizardsandwarriors.first;
 
 public abstract class Fighter {
 

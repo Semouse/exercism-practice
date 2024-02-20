@@ -1,4 +1,4 @@
-package com.github.semouse.bookingupforbeauty.task;
+package com.github.semouse.bookingupforbeauty;
 
 import static org.junit.jupiter.api.Assertions.*;
 
