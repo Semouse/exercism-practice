@@ -16,7 +16,6 @@ public class GameMaster {
         return switch (travelMethod) {
             case WALKING -> "You're traveling to your destination by walking.";
             case HORSEBACK -> "You're traveling to your destination on horseback.";
-            default -> "Unknown travel method";
         };
     }
 
