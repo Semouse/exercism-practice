@@ -1,9 +1,7 @@
 package com.github.semouse.learning.needforspeed;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import com.github.semouse.learning.needforspeed.NeedForSpeed;
-import com.github.semouse.learning.needforspeed.RaceTrack;
 import org.junit.jupiter.api.Test;
 
 class RaceTrackTest {

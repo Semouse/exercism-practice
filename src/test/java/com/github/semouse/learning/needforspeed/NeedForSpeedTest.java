@@ -3,7 +3,6 @@ package com.github.semouse.learning.needforspeed;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-import com.github.semouse.learning.needforspeed.NeedForSpeed;
 import org.junit.jupiter.api.Test;
 
 class NeedForSpeedTest {

@@ -1,4 +1,4 @@
-package com.github.semouse.leap;
+package com.github.semouse.exercises.leap;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;

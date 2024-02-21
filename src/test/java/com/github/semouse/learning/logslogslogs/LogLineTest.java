@@ -2,8 +2,6 @@ package com.github.semouse.learning.logslogslogs;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import com.github.semouse.learning.logslogslogs.LogLevel;
-import com.github.semouse.learning.logslogslogs.LogLine;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 

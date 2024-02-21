@@ -1,11 +1,7 @@
 package com.github.semouse.learning.wizardsandwarriors.two;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import com.github.semouse.learning.wizardsandwarriors.two.Character;
-import com.github.semouse.learning.wizardsandwarriors.two.Destination;
-import com.github.semouse.learning.wizardsandwarriors.two.GameMaster;
-import com.github.semouse.learning.wizardsandwarriors.two.TravelMethod;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 

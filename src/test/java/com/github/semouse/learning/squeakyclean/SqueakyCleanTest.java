@@ -2,7 +2,6 @@ package com.github.semouse.learning.squeakyclean;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import com.github.semouse.learning.squeakyclean.SqueakyClean;
 import org.junit.jupiter.api.Test;
 
 class SqueakyCleanTest {

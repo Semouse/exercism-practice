@@ -2,8 +2,6 @@ package com.github.semouse.learning.remotecontrol;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import com.github.semouse.learning.remotecontrol.ProductionRemoteControlCar;
-import com.github.semouse.learning.remotecontrol.RemoteControlCar;
 import org.junit.jupiter.api.Test;
 
 class ProductionRemoteControlCarTest {

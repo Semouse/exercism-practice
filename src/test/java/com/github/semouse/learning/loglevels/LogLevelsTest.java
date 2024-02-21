@@ -2,7 +2,6 @@ package com.github.semouse.learning.loglevels;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import com.github.semouse.learning.loglevels.LogLevels;
 import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;

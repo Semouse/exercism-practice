@@ -2,7 +2,6 @@ package com.github.semouse.learning.carassemble;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import com.github.semouse.learning.carassemble.CarsAssemble;
 import org.junit.jupiter.api.Test;
 
 class CarsAssembleTest {

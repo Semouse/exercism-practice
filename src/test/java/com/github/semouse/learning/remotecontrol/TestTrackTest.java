@@ -1,11 +1,7 @@
 package com.github.semouse.learning.remotecontrol;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import com.github.semouse.learning.remotecontrol.ExperimentalRemoteControlCar;
-import com.github.semouse.learning.remotecontrol.ProductionRemoteControlCar;
-import com.github.semouse.learning.remotecontrol.RemoteControlCar;
-import com.github.semouse.learning.remotecontrol.TestTrack;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 

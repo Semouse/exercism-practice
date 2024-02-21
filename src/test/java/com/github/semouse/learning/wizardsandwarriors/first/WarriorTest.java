@@ -3,9 +3,6 @@ package com.github.semouse.learning.wizardsandwarriors.first;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-import com.github.semouse.learning.wizardsandwarriors.first.Fighter;
-import com.github.semouse.learning.wizardsandwarriors.first.Warrior;
-import com.github.semouse.learning.wizardsandwarriors.first.Wizard;
 import org.junit.jupiter.api.Test;
 
 class WarriorTest {

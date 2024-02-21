@@ -2,7 +2,6 @@ package com.github.semouse.learning.elonstoycar;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import com.github.semouse.learning.elonstoycar.ElonsToyCar;
 import org.junit.jupiter.api.Test;
 
 class ElonsToyCarTest {

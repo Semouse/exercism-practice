@@ -1,8 +1,8 @@
 package com.github.semouse.learning.bookingupforbeauty;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import com.github.semouse.learning.bookingupforbeauty.AppointmentScheduler;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.Test;

@@ -2,7 +2,6 @@ package com.github.semouse.learning.salarycalculator;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import com.github.semouse.learning.salarycalculator.SalaryCalculator;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 

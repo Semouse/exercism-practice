@@ -1,4 +1,4 @@
-package com.github.semouse.leap;
+package com.github.semouse.exercises.leap;
 
 public class Leap {
 
