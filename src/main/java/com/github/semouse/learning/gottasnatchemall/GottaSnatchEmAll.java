@@ -1,3 +1,5 @@
+package com.github.semouse.learning.gottasnatchemall;
+
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
