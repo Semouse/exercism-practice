@@ -1,6 +1,5 @@
 package com.github.semouse.exercises.diamond;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -10,13 +9,13 @@ class DiamondPrinterTest {
     private final DiamondPrinter diamondPrinter = new DiamondPrinter();
 
     @Test
-    public void testOneByOneDiamond() {
+    void testOneByOneDiamond() {
         assertThat(diamondPrinter.printToList('A'))
                 .containsExactly("A");
     }
 
     @Test
-    public void testTwoByTwoDiamond() {
+    void testTwoByTwoDiamond() {
         assertThat(diamondPrinter.printToList('B'))
                 .containsExactly(
                         " A ",
@@ -25,7 +24,7 @@ class DiamondPrinterTest {
     }
 
     @Test
-    public void testThreeByThreeDiamond() {
+    void testThreeByThreeDiamond() {
         assertThat(diamondPrinter.printToList('C'))
                 .containsExactly(
                         "  A  ",
@@ -37,7 +36,7 @@ class DiamondPrinterTest {
 
 
     @Test
-    public void testFourByFourDiamond() {
+    void testFourByFourDiamond() {
         assertThat(diamondPrinter.printToList('D'))
                 .containsExactly(
                         "   A   ",
@@ -50,7 +49,7 @@ class DiamondPrinterTest {
     }
 
     @Test
-    public void testFullDiamond() {
+    void testFullDiamond() {
         assertThat(diamondPrinter.printToList('Z'))
                 .containsExactly(
                         "                         A                         ",
