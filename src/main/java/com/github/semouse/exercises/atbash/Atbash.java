@@ -5,7 +5,7 @@ package com.github.semouse.exercises.atbash;
  */
 public class Atbash {
 
-    private final static String ALPHABET = "abcdefghijklmnopqrstuvwxyz";
+    private static final String ALPHABET = "abcdefghijklmnopqrstuvwxyz";
 
     String encode(String input) {
         StringBuilder builder = new StringBuilder();
