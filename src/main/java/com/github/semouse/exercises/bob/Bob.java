@@ -1,7 +1,5 @@
 package com.github.semouse.exercises.bob;
 
-import java.nio.file.Paths;
-
 /**
  * <a href="https://exercism.org/tracks/java/exercises/bob">Source</a>
  */
