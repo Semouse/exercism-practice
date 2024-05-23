@@ -10,12 +10,8 @@ import java.util.List;
  * <a href="https://exercism.org/tracks/java/exercises/ledger">Source</a>
  */
 public class Ledger {
-    public LedgerEntry createLedgerEntry(String d, String desc, int c) {
-        LedgerEntry le = new LedgerEntry();
-        le.setChange(c);
-        le.setDescription(desc);
-        le.setLocalDate(LocalDate.parse(d));
-        return le;
+    public LedgerEntry createLedgerEntry(String date, String description, int chance) {
+        return new LedgerEntry(LocalDate.parse(date), description, chance);
     }
 
     public String format(String cur, String loc, LedgerEntry[] entries) {
@@ -68,15 +64,15 @@ public class Ledger {
             List<LedgerEntry> pos = new ArrayList<>();
             for (int i = 0; i < entries.length; i++) {
                 LedgerEntry e = entries[i];
-                if (e.getChange() >= 0) {
+                if (e.change() >= 0) {
                     pos.add(e);
                 } else {
                     neg.add(e);
                 }
             }
 
-            neg.sort((o1, o2) -> o1.getLocalDate().compareTo(o2.getLocalDate()));
-            pos.sort((o1, o2) -> o1.getLocalDate().compareTo(o2.getLocalDate()));
+            neg.sort((o1, o2) -> o1.localDate().compareTo(o2.localDate()));
+            pos.sort((o1, o2) -> o1.localDate().compareTo(o2.localDate()));
 
             List<LedgerEntry> all = new ArrayList<>();
             all.addAll(neg);
@@ -85,19 +81,19 @@ public class Ledger {
             for (int i = 0; i < all.size(); i++) {
                 LedgerEntry e = all.get(i);
 
-                String date = e.getLocalDate().format(DateTimeFormatter.ofPattern(datPat));
+                String date = e.localDate().format(DateTimeFormatter.ofPattern(datPat));
 
-                String desc = e.getDescription();
+                String desc = e.description();
                 if (desc.length() > 25) {
                     desc = desc.substring(0, 22);
                     desc = desc + "...";
                 }
 
                 String converted = null;
-                if (e.getChange() < 0) {
-                    converted = String.format("%.02f", (e.getChange() / 100) * -1);
+                if (e.change() < 0) {
+                    converted = String.format("%.02f", (e.change() / 100) * -1);
                 } else {
-                    converted = String.format("%.02f", e.getChange() / 100);
+                    converted = String.format("%.02f", e.change() / 100);
                 }
 
                 String[] parts = converted.split("\\.");
@@ -119,9 +115,9 @@ public class Ledger {
                 }
 
 
-                if (e.getChange() < 0 && loc.equals("en-US")) {
+                if (e.change() < 0 && loc.equals("en-US")) {
                     amount = "(" + amount + ")";
-                } else if (e.getChange() < 0 && loc.equals("nl-NL")) {
+                } else if (e.change() < 0 && loc.equals("nl-NL")) {
                     amount = curSymb + " -" + amount.replace(curSymb, "").trim() + " ";
                 } else if (loc.equals("nl-NL")) {
                     amount = " " + amount + " ";
@@ -141,33 +137,7 @@ public class Ledger {
         return s;
     }
 
-    public static class LedgerEntry {
-        private LocalDate localDate;
-        private String description;
-        private double change;
+    public record LedgerEntry(LocalDate localDate, String description, double change) {
 
-        public LocalDate getLocalDate() {
-            return localDate;
-        }
-
-        public void setLocalDate(LocalDate localDate) {
-            this.localDate = localDate;
-        }
-
-        public String getDescription() {
-            return description;
-        }
-
-        public void setDescription(String description) {
-            this.description = description;
-        }
-
-        public double getChange() {
-            return change;
-        }
-
-        public void setChange(double change) {
-            this.change = change;
-        }
     }
 }
