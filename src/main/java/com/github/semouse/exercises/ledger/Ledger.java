@@ -10,50 +10,60 @@ import java.util.List;
  * <a href="https://exercism.org/tracks/java/exercises/ledger">Source</a>
  */
 public class Ledger {
+
+    private static final String US_LOCALE = "en-US";
+    private static final String NL_LOCALE = "nl-NL";
+    private static final String USD_CURRENCY = "USD";
+    private static final String EUR_CURRENCY = "EUR";
+
     public LedgerEntry createLedgerEntry(String date, String description, int chance) {
         return new LedgerEntry(LocalDate.parse(date), description, chance);
     }
 
-    public String format(String cur, String loc, LedgerEntry[] entries) {
+    private void validateParams(String currency, String locale) {
+        if (!USD_CURRENCY.equals(currency) && !EUR_CURRENCY.equals(currency)) {
+            throw new IllegalArgumentException("Invalid currency");
+        } else if (!US_LOCALE.equals(locale) && !NL_LOCALE.equals(locale)) {
+            throw new IllegalArgumentException("Invalid locale");
+        }
+    }
+
+    public String format(String currency, String locale, LedgerEntry[] entries) {
+        validateParams(currency, locale);
         String s = null;
         String header = null;
         String curSymb = null;
         String datPat = null;
         String decSep = null;
         String thSep = null;
-        if (!cur.equals("USD") && !cur.equals("EUR")) {
-            throw new IllegalArgumentException("Invalid currency");
-        } else if (!loc.equals("en-US") && !loc.equals("nl-NL")) {
-            throw new IllegalArgumentException("Invalid locale");
-        } else {
-            if (cur.equals("USD")) {
-                if (loc.equals("en-US")) {
-                    curSymb = "$";
-                    datPat = "MM/dd/yyyy";
-                    decSep = ".";
-                    thSep = ",";
-                    header = "Date       | Description               | Change       ";
-                } else if (loc.equals("nl-NL")) {
-                    curSymb = "$";
-                    datPat = "dd/MM/yyyy";
-                    decSep = ",";
-                    thSep = ".";
-                    header = "Datum      | Omschrijving              | Verandering  ";
-                }
-            } else if (cur.equals("EUR")) {
-                if (loc.equals("en-US")) {
-                    curSymb = "€";
-                    datPat = "MM/dd/yyyy";
-                    decSep = ".";
-                    thSep = ",";
-                    header = "Date       | Description               | Change       ";
-                } else if (loc.equals("nl-NL")) {
-                    curSymb = "€";
-                    datPat = "dd/MM/yyyy";
-                    decSep = ",";
-                    thSep = ".";
-                    header = "Datum      | Omschrijving              | Verandering  ";
-                }
+
+        if (currency.equals(USD_CURRENCY)) {
+            if (locale.equals(US_LOCALE)) {
+                curSymb = "$";
+                datPat = "MM/dd/yyyy";
+                decSep = ".";
+                thSep = ",";
+                header = "Date       | Description               | Change       ";
+            } else if (locale.equals(NL_LOCALE)) {
+                curSymb = "$";
+                datPat = "dd/MM/yyyy";
+                decSep = ",";
+                thSep = ".";
+                header = "Datum      | Omschrijving              | Verandering  ";
+            }
+        } else if (currency.equals(EUR_CURRENCY)) {
+            if (locale.equals(US_LOCALE)) {
+                curSymb = "€";
+                datPat = "MM/dd/yyyy";
+                decSep = ".";
+                thSep = ",";
+                header = "Date       | Description               | Change       ";
+            } else if (locale.equals(NL_LOCALE)) {
+                curSymb = "€";
+                datPat = "dd/MM/yyyy";
+                decSep = ",";
+                thSep = ".";
+                header = "Datum      | Omschrijving              | Verandering  ";
             }
         }
 
@@ -108,18 +118,18 @@ public class Ledger {
                     count++;
                 }
 
-                if (loc.equals("nl-NL")) {
+                if (locale.equals(NL_LOCALE)) {
                     amount = curSymb + " " + amount + decSep + parts[1];
                 } else {
                     amount = curSymb + amount + decSep + parts[1];
                 }
 
 
-                if (e.change() < 0 && loc.equals("en-US")) {
+                if (e.change() < 0 && locale.equals(US_LOCALE)) {
                     amount = "(" + amount + ")";
-                } else if (e.change() < 0 && loc.equals("nl-NL")) {
+                } else if (e.change() < 0 && locale.equals(NL_LOCALE)) {
                     amount = curSymb + " -" + amount.replace(curSymb, "").trim() + " ";
-                } else if (loc.equals("nl-NL")) {
+                } else if (locale.equals(NL_LOCALE)) {
                     amount = " " + amount + " ";
                 } else {
                     amount = amount + " ";
