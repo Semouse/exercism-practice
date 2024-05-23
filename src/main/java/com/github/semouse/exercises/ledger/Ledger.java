@@ -51,11 +51,6 @@ public class Ledger {
 
         StringBuilder builder = new StringBuilder(header);
         for (LedgerEntry entry : all) {
-            String desc = entry.description();
-            if (desc.length() > 25) {
-                desc = desc.substring(0, 22);
-                desc = desc + "...";
-            }
 
             String converted = null;
             if (entry.change() < 0) {
@@ -96,7 +91,8 @@ public class Ledger {
             builder.append("\n");
 
             String date = formatLedgerDate(entry, ledgerFormat.getDatPat());
-            builder.append(buildLedgerRow(date, desc, amount));
+            String description = formatLedgerDescription(entry);
+            builder.append(buildLedgerRow(date, description, amount));
         }
 
 
@@ -109,6 +105,16 @@ public class Ledger {
 
     private String formatLedgerDate(LedgerEntry entry, String datePattern) {
         return entry.localDate().format(DateTimeFormatter.ofPattern(datePattern));
+    }
+
+    private String formatLedgerDescription(LedgerEntry entry) {
+        String description = entry.description();
+        if (description.length() > 25) {
+            description = description.substring(0, 22);
+            description = description + "...";
+        }
+
+        return description;
     }
 
     private void validateParams(String currency, String locale) {
