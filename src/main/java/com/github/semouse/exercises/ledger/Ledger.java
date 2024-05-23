@@ -2,8 +2,8 @@ package com.github.semouse.exercises.ledger;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 /**
@@ -20,12 +20,101 @@ public class Ledger {
         return new LedgerEntry(LocalDate.parse(date), description, chance);
     }
 
+    private List<LedgerEntry> ledgerEntriesSortedByChangeDate(LedgerEntry[] entries) {
+        Map<Boolean, List<LedgerEntry>> changeMap = Arrays.stream(entries)
+                .collect(Collectors.partitioningBy(ledgerEntry -> ledgerEntry.change >= 0));
+        changeMap.values()
+                .forEach(value -> value.sort(Comparator.comparing(LedgerEntry::localDate)));
+
+        return changeMap.values().stream()
+                .flatMap(List::stream)
+                .toList();
+    }
+
+    public String format(String currency, String locale, LedgerEntry[] entries) {
+        validateParams(currency, locale);
+
+        LedgerEntryFormat ledgerFormat = LedgerEntryFormat.getLedgerFormat(locale, currency);
+        String header = ledgerFormat.getHeader();
+        String curSymb = ledgerFormat.getCurSymb();
+        String datPat = ledgerFormat.getDatPat();
+        String decSep = ledgerFormat.getDecSep();
+        String thSep = ledgerFormat.getThSep();
+
+        if (entries.length == 0) {
+            return header;
+        }
+
+        List<LedgerEntry> all = ledgerEntriesSortedByChangeDate(entries);
+
+        for (int i = 0; i < all.size(); i++) {
+            LedgerEntry e = all.get(i);
+
+            String date = e.localDate().format(DateTimeFormatter.ofPattern(datPat));
+
+            String desc = e.description();
+            if (desc.length() > 25) {
+                desc = desc.substring(0, 22);
+                desc = desc + "...";
+            }
+
+            String converted = null;
+            if (e.change() < 0) {
+                converted = String.format("%.02f", (e.change() / 100) * -1);
+            } else {
+                converted = String.format("%.02f", e.change() / 100);
+            }
+
+            String[] parts = converted.split("\\.");
+            String amount = "";
+            int count = 1;
+            for (int ind = parts[0].length() - 1; ind >= 0; ind--) {
+                if (((count % 3) == 0) && ind > 0) {
+                    amount = thSep + parts[0].charAt(ind) + amount;
+                } else {
+                    amount = parts[0].charAt(ind) + amount;
+                }
+                count++;
+            }
+
+            if (locale.equals(NL_LOCALE)) {
+                amount = curSymb + " " + amount + decSep + parts[1];
+            } else {
+                amount = curSymb + amount + decSep + parts[1];
+            }
+
+
+            if (e.change() < 0 && locale.equals(US_LOCALE)) {
+                amount = "(" + amount + ")";
+            } else if (e.change() < 0 && locale.equals(NL_LOCALE)) {
+                amount = curSymb + " -" + amount.replace(curSymb, "").trim() + " ";
+            } else if (locale.equals(NL_LOCALE)) {
+                amount = " " + amount + " ";
+            } else {
+                amount = amount + " ";
+            }
+
+            header = header + "\n";
+            header = header + String.format("%s | %-25s | %13s",
+                    date,
+                    desc,
+                    amount);
+        }
+
+
+        return header;
+    }
+
     private void validateParams(String currency, String locale) {
         if (!USD_CURRENCY.equals(currency) && !EUR_CURRENCY.equals(currency)) {
             throw new IllegalArgumentException("Invalid currency");
         } else if (!US_LOCALE.equals(locale) && !NL_LOCALE.equals(locale)) {
             throw new IllegalArgumentException("Invalid locale");
         }
+    }
+
+    public record LedgerEntry(LocalDate localDate, String description, double change) {
+
     }
 
     public static class LedgerEntryFormat {
@@ -87,97 +176,5 @@ public class Ledger {
                     "."
             );
         }
-    }
-
-    public String format(String currency, String locale, LedgerEntry[] entries) {
-        validateParams(currency, locale);
-
-        LedgerEntryFormat ledgerFormat = LedgerEntryFormat.getLedgerFormat(locale, currency);
-        String header = ledgerFormat.getHeader();
-        String curSymb = ledgerFormat.getCurSymb();
-        String datPat = ledgerFormat.getDatPat();
-        String decSep = ledgerFormat.getDecSep();
-        String thSep = ledgerFormat.getThSep();
-
-        if (entries.length > 0) {
-            List<LedgerEntry> neg = new ArrayList<>();
-            List<LedgerEntry> pos = new ArrayList<>();
-            for (int i = 0; i < entries.length; i++) {
-                LedgerEntry e = entries[i];
-                if (e.change() >= 0) {
-                    pos.add(e);
-                } else {
-                    neg.add(e);
-                }
-            }
-
-            neg.sort((o1, o2) -> o1.localDate().compareTo(o2.localDate()));
-            pos.sort((o1, o2) -> o1.localDate().compareTo(o2.localDate()));
-
-            List<LedgerEntry> all = new ArrayList<>();
-            all.addAll(neg);
-            all.addAll(pos);
-
-            for (int i = 0; i < all.size(); i++) {
-                LedgerEntry e = all.get(i);
-
-                String date = e.localDate().format(DateTimeFormatter.ofPattern(datPat));
-
-                String desc = e.description();
-                if (desc.length() > 25) {
-                    desc = desc.substring(0, 22);
-                    desc = desc + "...";
-                }
-
-                String converted = null;
-                if (e.change() < 0) {
-                    converted = String.format("%.02f", (e.change() / 100) * -1);
-                } else {
-                    converted = String.format("%.02f", e.change() / 100);
-                }
-
-                String[] parts = converted.split("\\.");
-                String amount = "";
-                int count = 1;
-                for (int ind = parts[0].length() - 1; ind >= 0; ind--) {
-                    if (((count % 3) == 0) && ind > 0) {
-                        amount = thSep + parts[0].charAt(ind) + amount;
-                    } else {
-                        amount = parts[0].charAt(ind) + amount;
-                    }
-                    count++;
-                }
-
-                if (locale.equals(NL_LOCALE)) {
-                    amount = curSymb + " " + amount + decSep + parts[1];
-                } else {
-                    amount = curSymb + amount + decSep + parts[1];
-                }
-
-
-                if (e.change() < 0 && locale.equals(US_LOCALE)) {
-                    amount = "(" + amount + ")";
-                } else if (e.change() < 0 && locale.equals(NL_LOCALE)) {
-                    amount = curSymb + " -" + amount.replace(curSymb, "").trim() + " ";
-                } else if (locale.equals(NL_LOCALE)) {
-                    amount = " " + amount + " ";
-                } else {
-                    amount = amount + " ";
-                }
-
-                header = header + "\n";
-                header = header + String.format("%s | %-25s | %13s",
-                        date,
-                        desc,
-                        amount);
-            }
-
-        }
-
-        return header;
-    }
-
-    public record LedgerEntry(LocalDate localDate, String description, double change) {
-
     }
 }
