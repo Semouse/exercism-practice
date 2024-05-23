@@ -23,17 +23,6 @@ public class Ledger {
         return new LedgerEntry(LocalDate.parse(date), description, chance);
     }
 
-    private List<LedgerEntry> ledgerEntriesSortedByChangeDate(LedgerEntry[] entries) {
-        Map<Boolean, List<LedgerEntry>> changeMap = Arrays.stream(entries)
-                .collect(Collectors.partitioningBy(ledgerEntry -> ledgerEntry.change >= 0));
-        changeMap.values()
-                .forEach(value -> value.sort(Comparator.comparing(LedgerEntry::localDate)));
-
-        return changeMap.values().stream()
-                .flatMap(List::stream)
-                .toList();
-    }
-
     public String format(String currency, String locale, LedgerEntry[] entries) {
         validateParams(currency, locale);
 
@@ -41,7 +30,6 @@ public class Ledger {
         String header = ledgerFormat.getHeader();
         String curSymb = ledgerFormat.getCurSymb();
         String decSep = ledgerFormat.getDecSep();
-        String thSep = ledgerFormat.getThSep();
 
         if (entries.length == 0) {
             return header;
@@ -51,26 +39,9 @@ public class Ledger {
 
         StringBuilder builder = new StringBuilder(header);
         for (LedgerEntry entry : all) {
+            String[] parts = getIntegerAndFractionalParts(entry);
 
-            String converted = null;
-            if (entry.change() < 0) {
-                converted = String.format("%.02f", (entry.change() / 100) * -1);
-            } else {
-                converted = String.format("%.02f", entry.change() / 100);
-            }
-
-            String[] parts = converted.split("\\.");
-            String amount = "";
-            int count = 1;
-            for (int ind = parts[0].length() - 1; ind >= 0; ind--) {
-                if (((count % 3) == 0) && ind > 0) {
-                    amount = thSep + parts[0].charAt(ind) + amount;
-                } else {
-                    amount = parts[0].charAt(ind) + amount;
-                }
-                count++;
-            }
-
+            String amount = applyThousandsSeparator(parts[0], ledgerFormat);
             if (locale.equals(NL_LOCALE)) {
                 amount = curSymb + " " + amount + decSep + parts[1];
             } else {
@@ -117,12 +88,45 @@ public class Ledger {
         return description;
     }
 
+    private String applyThousandsSeparator(String integerPart, LedgerEntryFormat ledgerEntryFormat) {
+        StringBuilder amount = new StringBuilder();
+        int count = 1;
+        for (int ind = integerPart.length() - 1; ind >= 0; ind--) {
+            if (((count % 3) == 0) && ind > 0) {
+                amount.insert(0, ledgerEntryFormat.getThSep() + integerPart.charAt(ind));
+            } else {
+                amount.insert(0, integerPart.charAt(ind));
+            }
+            count++;
+        }
+
+        return amount.toString();
+    }
+
+    private String[] getIntegerAndFractionalParts(LedgerEntry entry) {
+        String converted = entry.change() < 0 ? String.format("%.02f", (entry.change() / 100) * -1) :
+                String.format("%.02f", entry.change() / 100);
+
+        return converted.split("\\.");
+    }
+
     private void validateParams(String currency, String locale) {
         if (!USD_CURRENCY.equals(currency) && !EUR_CURRENCY.equals(currency)) {
             throw new IllegalArgumentException("Invalid currency");
         } else if (!US_LOCALE.equals(locale) && !NL_LOCALE.equals(locale)) {
             throw new IllegalArgumentException("Invalid locale");
         }
+    }
+
+    private List<LedgerEntry> ledgerEntriesSortedByChangeDate(LedgerEntry[] entries) {
+        Map<Boolean, List<LedgerEntry>> changeMap = Arrays.stream(entries)
+                .collect(Collectors.partitioningBy(ledgerEntry -> ledgerEntry.change >= 0));
+        changeMap.values()
+                .forEach(value -> value.sort(Comparator.comparing(LedgerEntry::localDate)));
+
+        return changeMap.values().stream()
+                .flatMap(List::stream)
+                .toList();
     }
 
     public record LedgerEntry(LocalDate localDate, String description, double change) {
