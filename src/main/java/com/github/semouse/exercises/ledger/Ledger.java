@@ -40,7 +40,6 @@ public class Ledger {
         LedgerEntryFormat ledgerFormat = LedgerEntryFormat.getLedgerFormat(locale, currency);
         String header = ledgerFormat.getHeader();
         String curSymb = ledgerFormat.getCurSymb();
-        String datPat = ledgerFormat.getDatPat();
         String decSep = ledgerFormat.getDecSep();
         String thSep = ledgerFormat.getThSep();
 
@@ -51,20 +50,18 @@ public class Ledger {
         List<LedgerEntry> all = ledgerEntriesSortedByChangeDate(entries);
 
         StringBuilder builder = new StringBuilder(header);
-        for (LedgerEntry e : all) {
-            String date = e.localDate().format(DateTimeFormatter.ofPattern(datPat));
-
-            String desc = e.description();
+        for (LedgerEntry entry : all) {
+            String desc = entry.description();
             if (desc.length() > 25) {
                 desc = desc.substring(0, 22);
                 desc = desc + "...";
             }
 
             String converted = null;
-            if (e.change() < 0) {
-                converted = String.format("%.02f", (e.change() / 100) * -1);
+            if (entry.change() < 0) {
+                converted = String.format("%.02f", (entry.change() / 100) * -1);
             } else {
-                converted = String.format("%.02f", e.change() / 100);
+                converted = String.format("%.02f", entry.change() / 100);
             }
 
             String[] parts = converted.split("\\.");
@@ -86,9 +83,9 @@ public class Ledger {
             }
 
 
-            if (e.change() < 0 && locale.equals(US_LOCALE)) {
+            if (entry.change() < 0 && locale.equals(US_LOCALE)) {
                 amount = "(" + amount + ")";
-            } else if (e.change() < 0 && locale.equals(NL_LOCALE)) {
+            } else if (entry.change() < 0 && locale.equals(NL_LOCALE)) {
                 amount = curSymb + " -" + amount.replace(curSymb, "").trim() + " ";
             } else if (locale.equals(NL_LOCALE)) {
                 amount = " " + amount + " ";
@@ -97,6 +94,8 @@ public class Ledger {
             }
 
             builder.append("\n");
+
+            String date = formatLedgerDate(entry, ledgerFormat.getDatPat());
             builder.append(buildLedgerRow(date, desc, amount));
         }
 
@@ -106,6 +105,10 @@ public class Ledger {
 
     private String buildLedgerRow(String date, String description, String amount) {
         return String.format("%s | %-25s | %13s", date, description, amount);
+    }
+
+    private String formatLedgerDate(LedgerEntry entry, String datePattern) {
+        return entry.localDate().format(DateTimeFormatter.ofPattern(datePattern));
     }
 
     private void validateParams(String currency, String locale) {
