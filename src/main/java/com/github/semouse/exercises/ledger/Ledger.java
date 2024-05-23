@@ -2,7 +2,10 @@ package com.github.semouse.exercises.ledger;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 
@@ -47,9 +50,8 @@ public class Ledger {
 
         List<LedgerEntry> all = ledgerEntriesSortedByChangeDate(entries);
 
-        for (int i = 0; i < all.size(); i++) {
-            LedgerEntry e = all.get(i);
-
+        StringBuilder builder = new StringBuilder(header);
+        for (LedgerEntry e : all) {
             String date = e.localDate().format(DateTimeFormatter.ofPattern(datPat));
 
             String desc = e.description();
@@ -94,15 +96,16 @@ public class Ledger {
                 amount = amount + " ";
             }
 
-            header = header + "\n";
-            header = header + String.format("%s | %-25s | %13s",
-                    date,
-                    desc,
-                    amount);
+            builder.append("\n");
+            builder.append(buildLedgerRow(date, desc, amount));
         }
 
 
-        return header;
+        return builder.toString();
+    }
+
+    private String buildLedgerRow(String date, String description, String amount) {
+        return String.format("%s | %-25s | %13s", date, description, amount);
     }
 
     private void validateParams(String currency, String locale) {
