@@ -28,46 +28,76 @@ public class Ledger {
         }
     }
 
-    public String format(String currency, String locale, LedgerEntry[] entries) {
-        validateParams(currency, locale);
-        String s = null;
-        String header = null;
-        String curSymb = null;
-        String datPat = null;
-        String decSep = null;
-        String thSep = null;
+    public static class LedgerEntryFormat {
+        private final String header;
+        private final String curSymb;
+        private final String datPat;
+        private final String decSep;
+        private final String thSep;
 
-        if (currency.equals(USD_CURRENCY)) {
-            if (locale.equals(US_LOCALE)) {
-                curSymb = "$";
-                datPat = "MM/dd/yyyy";
-                decSep = ".";
-                thSep = ",";
-                header = "Date       | Description               | Change       ";
-            } else if (locale.equals(NL_LOCALE)) {
-                curSymb = "$";
-                datPat = "dd/MM/yyyy";
-                decSep = ",";
-                thSep = ".";
-                header = "Datum      | Omschrijving              | Verandering  ";
-            }
-        } else if (currency.equals(EUR_CURRENCY)) {
-            if (locale.equals(US_LOCALE)) {
-                curSymb = "€";
-                datPat = "MM/dd/yyyy";
-                decSep = ".";
-                thSep = ",";
-                header = "Date       | Description               | Change       ";
-            } else if (locale.equals(NL_LOCALE)) {
-                curSymb = "€";
-                datPat = "dd/MM/yyyy";
-                decSep = ",";
-                thSep = ".";
-                header = "Datum      | Omschrijving              | Verandering  ";
-            }
+        public LedgerEntryFormat(String header, String curSymb, String datPat, String decSep, String thSep) {
+            this.header = header;
+            this.curSymb = curSymb;
+            this.datPat = datPat;
+            this.decSep = decSep;
+            this.thSep = thSep;
         }
 
-        s = header;
+        public String getHeader() {
+            return header;
+        }
+
+        public String getCurSymb() {
+            return curSymb;
+        }
+
+        public String getDatPat() {
+            return datPat;
+        }
+
+        public String getDecSep() {
+            return decSep;
+        }
+
+        public String getThSep() {
+            return thSep;
+        }
+
+        public static LedgerEntryFormat getLedgerFormat(String locale, String currency) {
+            return US_LOCALE.equals(locale) ? getAmericanLedgerFormat(currency) :
+                    getDutchLedgerFormat(currency);
+        }
+
+        private static LedgerEntryFormat getAmericanLedgerFormat(String currency) {
+            return new LedgerEntryFormat(
+                    "Date       | Description               | Change       ",
+                    USD_CURRENCY.equals(currency) ? "$" : "€",
+                    "MM/dd/yyyy",
+                    ".",
+                    ","
+            );
+        }
+
+        private static LedgerEntryFormat getDutchLedgerFormat(String currency) {
+            return new LedgerEntryFormat(
+                    "Datum      | Omschrijving              | Verandering  ",
+                    USD_CURRENCY.equals(currency) ? "$" : "€",
+                    "dd/MM/yyyy",
+                    ",",
+                    "."
+            );
+        }
+    }
+
+    public String format(String currency, String locale, LedgerEntry[] entries) {
+        validateParams(currency, locale);
+
+        LedgerEntryFormat ledgerFormat = LedgerEntryFormat.getLedgerFormat(locale, currency);
+        String header = ledgerFormat.getHeader();
+        String curSymb = ledgerFormat.getCurSymb();
+        String datPat = ledgerFormat.getDatPat();
+        String decSep = ledgerFormat.getDecSep();
+        String thSep = ledgerFormat.getThSep();
 
         if (entries.length > 0) {
             List<LedgerEntry> neg = new ArrayList<>();
@@ -135,8 +165,8 @@ public class Ledger {
                     amount = amount + " ";
                 }
 
-                s = s + "\n";
-                s = s + String.format("%s | %-25s | %13s",
+                header = header + "\n";
+                header = header + String.format("%s | %-25s | %13s",
                         date,
                         desc,
                         amount);
@@ -144,7 +174,7 @@ public class Ledger {
 
         }
 
-        return s;
+        return header;
     }
 
     public record LedgerEntry(LocalDate localDate, String description, double change) {
